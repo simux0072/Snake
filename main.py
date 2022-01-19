@@ -12,7 +12,7 @@ gamma = 0.999
 eps_start = 1
 eps_end = 0.01
 eps_decay = 0.00001
-target_update = 1000
+target_update = 5000
 memory_size = 1000000
 lr = 0.00005
 

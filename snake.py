@@ -57,7 +57,7 @@ class player():
         for i in self.snake[::-1]:
             if i != self.snake[-1] and i['Coordinates'] == self.snake[-1]['Coordinates']:
                 return True, -1
-        return False, 0
+        return False, -0.1
 
     def _ate_food(self, food_):
         if self.snake[-1]['Coordinates'] == food_.coordinates:
@@ -72,13 +72,13 @@ class player():
             self.points += 1
             food_._generate()
             return True, 1
-        return False, 0 
+        return False, -0.1 
             
 
     def _too_many_moves(self):
         if self.iter > len(self.snake) * 50: # Check if there were too many moves
             return True, -50
-        return False, 0
+        return False, -0.1
 
     def _play(self, food_, move):
         self._move(move)
@@ -95,7 +95,7 @@ class player():
             if game_end:
                 return reward, self.points, game_end
         
-        return 0, self.points, False
+        return -0.1, self.points, False
 
     def _draw(self, food_):
         self.display.fill((0, 0, 0))

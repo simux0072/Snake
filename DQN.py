@@ -5,12 +5,12 @@ import torch.nn.functional as F
 class DQN(nn.Module):
     def __init__(self, num_layer):
         super().__init__()
-        self.conv1_1 = nn.Conv2d(in_channels=num_layer, out_channels=num_layer, kernel_size=3, groups=4, padding=1)
-        self.conv1_2 = nn.Conv2d(in_channels=num_layer, out_channels=num_layer, kernel_size=3, groups=4, padding=1)
-        self.conv2_1 = nn.Conv2d(in_channels=num_layer, out_channels=num_layer, kernel_size=3, groups=4, padding=1)
-        self.conv2_2 = nn.Conv2d(in_channels=num_layer, out_channels=num_layer, kernel_size=3, groups=4, padding=1)
-        self.conv3_1 = nn.Conv2d(in_channels=num_layer, out_channels=num_layer, kernel_size=3, groups=4, padding=1)
-        self.conv3_2 = nn.Conv2d(in_channels=num_layer, out_channels=num_layer, kernel_size=3, groups=4, padding=1)
+        self.conv1_1 = nn.Conv2d(in_channels=num_layer, out_channels=num_layer, kernel_size=3, groups=8, padding=1)
+        self.conv1_2 = nn.Conv2d(in_channels=num_layer, out_channels=num_layer, kernel_size=3, groups=8, padding=1)
+        self.conv2_1 = nn.Conv2d(in_channels=num_layer, out_channels=num_layer, kernel_size=3, groups=8, padding=1)
+        self.conv2_2 = nn.Conv2d(in_channels=num_layer, out_channels=num_layer, kernel_size=3, groups=8, padding=1)
+        self.conv3_1 = nn.Conv2d(in_channels=num_layer, out_channels=num_layer, kernel_size=3, groups=8, padding=1)
+        self.conv3_2 = nn.Conv2d(in_channels=num_layer, out_channels=num_layer, kernel_size=3, groups=8, padding=1)
         
         self.norm1_1 = nn.BatchNorm2d(num_features=num_layer)
         self.norm1_2 = nn.BatchNorm2d(num_features=num_layer)
@@ -19,9 +19,9 @@ class DQN(nn.Module):
         self.norm3_1 = nn.BatchNorm2d(num_features=num_layer)
         self.norm3_2 = nn.BatchNorm2d(num_features=num_layer)
 
-        self.conv_res1 = nn.Conv2d(in_channels=num_layer, out_channels=num_layer, kernel_size=1, groups=4)
-        self.conv_res2 = nn.Conv2d(in_channels=num_layer, out_channels=num_layer, kernel_size=1, groups=4)
-        self.conv_res3 = nn.Conv2d(in_channels=num_layer, out_channels=num_layer, kernel_size=1, groups=4)
+        self.conv_res1 = nn.Conv2d(in_channels=num_layer, out_channels=num_layer, kernel_size=1, groups=8)
+        self.conv_res2 = nn.Conv2d(in_channels=num_layer, out_channels=num_layer, kernel_size=1, groups=8)
+        self.conv_res3 = nn.Conv2d(in_channels=num_layer, out_channels=num_layer, kernel_size=1, groups=8)
 
         self.globpool = nn.AvgPool2d(kernel_size=(6, 10), stride=2, padding=1)
 

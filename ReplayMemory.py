@@ -10,8 +10,8 @@ class ReplayMemory():
         if len(self.memory) < self.capacity:
             self.memory.append(experience)
         else:
-            self.memory[self.push_count % self.capacity] = experience
-        self.push_count += 1
+            self.memory.append(experience)
+            del self.memory[0]
     
     def sample(self, batch_size):
         return random.sample(self.memory, batch_size)

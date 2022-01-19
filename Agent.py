@@ -2,7 +2,6 @@ import random
 import torch
 import math
 from torch import optim
-from torch import nn
 
 class Agent():
     def __init__(self, strategy, num_actions, device, target_net, policy_net, lr, gamma):
@@ -15,7 +14,6 @@ class Agent():
         self.lr = lr
         self.gamma = gamma
         self.optimizer = optim.Adam(self.policy_net.parameters(), self.lr)
-        self.loss_function = nn.MSELoss()
 
     def select_action(self, state, policy_net):
         rate = self.strategy.get_exploration_rate(self.current_step)
@@ -29,12 +27,12 @@ class Agent():
                 return policy_net(state).argmax(dim = 1).to(self.device) #Exploit 
     
     def train_memory(self, states, actions, rewards, next_states):
-        current_q_values = self.policy_net(states).gather(1, actions.unsqueeze(1)).squeeze(1)
+        current_q_values = self.policy_net(states).gather(1, actions.unsqueeze(1)).squeeze()
 
         next_q_values = self.target_net(next_states).max(1)[0]
         discounted_q_values = rewards.squeeze(1) + next_q_values * self.gamma
 
-        loss = self.loss_function(current_q_values, discounted_q_values.detach())
+        loss = torch.sum(discounted_q_values - current_q_values)**2/rewards.size(0)
         self.optimizer.zero_grad()
         loss.backward()
         self.optimizer.step()

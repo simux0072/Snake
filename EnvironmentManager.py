@@ -28,5 +28,6 @@ class EnvManager():
             return torch.zeros((1, 8, snake.DIMENSIONS[1], snake.DIMENSIONS[0]), dtype=torch.float32).to(self.device)
         else:
             state = torch.from_numpy(self.env._get_current_state()).unsqueeze(dim=0).to(self.device)
+            print(state)
         return state
 
