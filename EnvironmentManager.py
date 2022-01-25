@@ -21,13 +21,13 @@ class EnvManager():
     
     def take_action(self, action):
         reward, points, self.done = self.player._play(self.food, action.item())
-        return torch.tensor([reward], device=self.device), points
+        return torch.tensor([reward], device=self.device), points, torch.tensor([self.done], device=self.device)
 
     def get_state(self):
         if self.done:
             return torch.zeros((1, 8, snake.DIMENSIONS[1], snake.DIMENSIONS[0]), dtype=torch.float32).to(self.device)
         else:
             state = torch.from_numpy(self.env._get_current_state()).unsqueeze(dim=0).to(self.device)
-            print(state)
         return state
+
 

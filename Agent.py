@@ -4,7 +4,7 @@ import math
 from torch import optim
 
 class Agent():
-    def __init__(self, strategy, num_actions, device, target_net, policy_net, lr, gamma):
+    def __init__(self, strategy, num_actions, device, target_net, policy_net, lr, gamma, checkpoint):
         self.current_step = 0
         self.strategy = strategy
         self.num_actions = num_actions
@@ -14,6 +14,9 @@ class Agent():
         self.lr = lr
         self.gamma = gamma
         self.optimizer = optim.Adam(self.policy_net.parameters(), self.lr)
+        if checkpoint is not None:
+            self.optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
+            self.current_step = checkpoint['current_step']
 
     def select_action(self, state, policy_net):
         rate = self.strategy.get_exploration_rate(self.current_step)
@@ -26,13 +29,13 @@ class Agent():
             with torch.no_grad():
                 return policy_net(state).argmax(dim = 1).to(self.device) #Exploit 
     
-    def train_memory(self, states, actions, rewards, next_states):
+    def train_memory(self, states, actions, rewards, next_states, mask):
         current_q_values = self.policy_net(states).gather(1, actions.unsqueeze(1)).squeeze()
 
         next_q_values = self.target_net(next_states).max(1)[0]
-        discounted_q_values = rewards.squeeze(1) + next_q_values * self.gamma
+        discounted_q_values = rewards.squeeze(1) + next_q_values * self.gamma * mask.type(torch.float32)
 
-        loss = torch.sum(discounted_q_values - current_q_values)**2/rewards.size(0)
+        loss = torch.square(discounted_q_values - current_q_values).mean()
         self.optimizer.zero_grad()
         loss.backward()
         self.optimizer.step()
@@ -46,6 +49,6 @@ class EpsilonGreedyStrat():
         self.start = start
         self.end = end
         self.decay = decay
-        
+
     def get_exploration_rate(self, current_step):
         return self.end + (self.start - self.end) * math.exp(-1. * current_step * self.decay)
